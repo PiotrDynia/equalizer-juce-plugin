@@ -1,0 +1,1 @@
+# equalizer-juce-plugin
