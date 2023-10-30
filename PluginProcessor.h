@@ -3,10 +3,17 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_dsp/juce_dsp.h>
 
+enum Slope {
+    Slope_12,
+    Slope_24,
+    Slope_36,
+    Slope_48
+};
+
 struct ChainSettings {
     float peakFreq {0}, peakGainInDecibels {0}, peakQuality {1.f};
     float lowCutFreq {0}, highCutFreq{0};
-    int lowCutSlope {0}, highCutSlope {0};
+    Slope lowCutSlope {Slope::Slope_12}, highCutSlope {Slope::Slope_12};
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
@@ -58,8 +65,10 @@ public:
 private:
     using Filter = juce::dsp::IIR::Filter<float>;
 
+    // LowPass/HiPass slope - 12/24/36/48
     using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
 
+    // Whole chain - HiPass, BandPass, LowPass
     using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
 
     MonoChain leftChain, rightChain;
