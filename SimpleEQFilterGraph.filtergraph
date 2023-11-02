@@ -61,11 +61,11 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="5" x="0.47875" y="0.4673076923076923" useARA="0" uiLastX_Normal="309"
+  <FILTER uid="5" x="0.47875" y="0.5788461538461539" useARA="0" uiLastX_Normal="309"
           uiLastY_Normal="354" uiopen_Normal="0">
     <PLUGIN name="SimpleEQ" format="VST3" category="Fx" manufacturer="yourcompany"
             version="0.0.1" file="/Library/Audio/Plug-Ins/VST3/SimpleEQ.vst3"
-            uniqueId="970487f5" isInstrument="0" fileTime="18b7b928df5" infoUpdateTime="18b7b94e7fd"
+            uniqueId="970487f5" isInstrument="0" fileTime="18b7b928df5" infoUpdateTime="18b91bc7c45"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="83a6e647"/>
     <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
@@ -78,13 +78,14 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="6" x="0.46875" y="0.3288461538461538" useARA="0">
+  <FILTER uid="6" x="0.46875" y="0.3288461538461538" useARA="0" uiLastX_Normal="234"
+          uiLastY_Normal="337" uiopen_Normal="0">
     <PLUGIN name="AUAudioFilePlayer" format="AudioUnit" category="Generator"
             manufacturer="Apple" version="1.6.0" file="AudioUnit:Generators/augn,afpl,appl"
-            uniqueId="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="18b7b94e7fd"
+            uniqueId="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="18b91bc7c45"
             numInputs="0" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="6163676e"/>
-    <STATE>137.hAGaoMGcv.i0AHv.DTfAGfPBJr.CT4VXsUFWsEla0YVXiQWcxUlbTQVXzEFUzkGbkc0b0IFc4AWYWYWYxMWZu4FVU4FcoQGakQlDgAGbrAjDgU2YtIQXlAGaP..BUnwIrDSNAozSPUkV........AD..........M....................vE</STATE>
+    <STATE>546.hAGaoMGcv.C1AHv.DTfAGfPBJr.Gc3wGgvUag4VclE1XzUmbkIGUjEFcg8EDarVPUAkbkMWYzAUYxMWZyQWYtQ2TzEFcksTY4c0b0IFc4AWYWYWYxMWZu4FUzkGbk8EDOXVZrUVKxUlYkIWYtMVYyQkag0VYRDFbvwFPgxvzM3vCPDQFXYTZrUlSg0VYWIUYmk1atMmWIM2TkwVYiQWYjYTZrU1WPPyKUMWYxM2KDkmaoE1KDU1bqQ2av8BTAQDHs.xTrk1YnQGa4AhQkUFao41YfPEZgQmK2ElcgJA0SPQEVbAFYngWRU1Yo8laD8VYywzauAmVRU1Yo8laDEFcg8EDPjzbSUFakMFckQlTkcVZu4lVRU1Yo8laNEVakgvSP.G..........fsUT068+A...HGGL45e......v+......pl4A..fA...N.d...X....xwASt9G..D....fq+A.......................................................LGIwC......InkSkcGHRU1Yo8laIHQXlAGaP.fDgU2YtEMHPXkQowVYfDCVU4FcoQGakQF.H.PF.XB.q.PR.DE.YAfW..G.0Afd.rG.8A.g.zH.UB.o.rM.cCf4.Te..DvDA3Q.eDfjALY.dFvmAPZ.lFvpA3Z.0B.......HP..........HB..................Dfu</STATE>
     <LAYOUT>
       <INPUTS/>
       <OUTPUTS>

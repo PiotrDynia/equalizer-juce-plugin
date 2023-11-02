@@ -19,12 +19,12 @@ struct ChainSettings {
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
 
 //==============================================================================
-class AudioPluginAudioProcessor final : public juce::AudioProcessor
+class SimpleEQAudioProcessor final : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    AudioPluginAudioProcessor();
-    ~AudioPluginAudioProcessor() override;
+    SimpleEQAudioProcessor();
+    ~SimpleEQAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -71,6 +71,8 @@ private:
     // Whole chain - HiPass, BandPass, LowPass
     using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
 
+    using Coefficients = Filter::CoefficientsPtr;
+
     MonoChain leftChain, rightChain;
 
     enum ChainPositions {
@@ -79,6 +81,19 @@ private:
         HighCut
     };
 
+    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+    void updatePeakFilter(const ChainSettings& chainSettings);
+
+    template<int Index, typename ChainType, typename CoefficientType>
+    void update(ChainType& chainType, const CoefficientType& coefficients);
+
+    template<typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope);
+
+    void updateLowCutFilters(const ChainSettings& chainSettings);
+    void updateHighCutFilters(const ChainSettings& chainSettings);
+    void updateFilters();
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
 };
