@@ -206,10 +206,7 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts) {
 
 void SimpleEQAudioProcessor::updateLowCutFilters(const ChainSettings &chainSettings) {
     // order parameter - 2 for 12dB, 4 for 24 dB, etc...
-    auto lowCutCoefficients =
-            juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
-                                                                                        getSampleRate(),
-                                                                                        2 * (chainSettings.lowCutSlope + 1));
+    auto lowCutCoefficients = makeLowCutFilter(chainSettings, getSampleRate());
     auto& lowLeftCut = leftChain.get<ChainPositions::LowCut>();
     auto& lowRightCut = rightChain.get<ChainPositions::LowCut>();
 
@@ -218,21 +215,21 @@ void SimpleEQAudioProcessor::updateLowCutFilters(const ChainSettings &chainSetti
 }
 
 void SimpleEQAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings) {
-    auto peakCoefficients =
-            juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
-                                                                chainSettings.peakFreq,
-                                                                chainSettings.peakQuality,
-                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+    auto peakCoefficients = makePeakFilter(chainSettings, getSampleRate());
 
     updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
 }
 
+Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate) {
+    return juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
+                                                               chainSettings.peakFreq,
+                                                               chainSettings.peakQuality,
+                                                               juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+}
+
 void SimpleEQAudioProcessor::updateHighCutFilters(const ChainSettings &chainSettings) {
-    auto highCutCoefficients =
-            juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq,
-                                                                                       getSampleRate(),
-                                                                                       2 * (chainSettings.highCutSlope + 1));
+    auto highCutCoefficients = makeHighCutFilter(chainSettings, getSampleRate());
 
     auto& highLeftCut = leftChain.get<ChainPositions::HighCut>();
     auto& highRightCut = rightChain.get<ChainPositions::HighCut>();
@@ -242,7 +239,7 @@ void SimpleEQAudioProcessor::updateHighCutFilters(const ChainSettings &chainSett
 }
 
 template<typename ChainType, typename CoefficientType>
-void SimpleEQAudioProcessor::updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope) {
+void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope) {
     chainType.template setBypassed<0>(true);
     chainType.template setBypassed<1>(true);
     chainType.template setBypassed<2>(true);
@@ -265,13 +262,12 @@ void SimpleEQAudioProcessor::updateCutFilter(ChainType& chainType, const Coeffic
 }
 
 template<int Index, typename ChainType, typename CoefficientType>
-void SimpleEQAudioProcessor::update(ChainType& chainType, const CoefficientType& coefficients) {
+void update(ChainType& chainType, const CoefficientType& coefficients) {
     updateCoefficients(chainType.template get<Index>().coefficients, coefficients[Index]);
     chainType.template setBypassed<Index>(false);
 }
 
-void SimpleEQAudioProcessor::updateCoefficients(SimpleEQAudioProcessor::Coefficients &old,
-                                                const SimpleEQAudioProcessor::Coefficients &replacements) {
+void updateCoefficients(Coefficients& old, const Coefficients& replacements) {
     *old = *replacements;
 }
 

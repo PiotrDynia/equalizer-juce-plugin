@@ -16,7 +16,39 @@ struct ChainSettings {
     Slope lowCutSlope {Slope::Slope_12}, highCutSlope {Slope::Slope_12};
 };
 
+using Filter = juce::dsp::IIR::Filter<float>;
+// LowPass/HiPass slope - 12/24/36/48
+using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
+// Whole chain - HiPass, BandPass, LowPass
+using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
+using Coefficients = Filter::CoefficientsPtr;
+
+enum ChainPositions {
+    LowCut,
+    Peak,
+    HighCut
+};
+
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate);
+
+template<int Index, typename ChainType, typename CoefficientType>
+void update(ChainType& chainType, const CoefficientType& coefficients);
+template<typename ChainType, typename CoefficientType>
+void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope);
+
+inline auto makeLowCutFilter(const ChainSettings& chainSettings, double sampleRate) {
+   return juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
+                                                                                      sampleRate,
+                                                                                      2 * (chainSettings.lowCutSlope + 1));
+}
+
+inline auto makeHighCutFilter(const ChainSettings& chainSettings, double sampleRate) {
+    return juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq,
+                                                                               sampleRate,
+                                                                               2 * (chainSettings.highCutSlope + 1));
+}
 
 //==============================================================================
 class SimpleEQAudioProcessor final : public juce::AudioProcessor
@@ -63,30 +95,12 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-    using Filter = juce::dsp::IIR::Filter<float>;
-    // LowPass/HiPass slope - 12/24/36/48
-    using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
-    // Whole chain - HiPass, BandPass, LowPass
-    using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
-    using Coefficients = Filter::CoefficientsPtr;
-
-    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
-    template<int Index, typename ChainType, typename CoefficientType>
-    void update(ChainType& chainType, const CoefficientType& coefficients);
-    template<typename ChainType, typename CoefficientType>
-    void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope);
     void updatePeakFilter(const ChainSettings& chainSettings);
     void updateLowCutFilters(const ChainSettings& chainSettings);
     void updateHighCutFilters(const ChainSettings& chainSettings);
     void updateFilters();
 
     MonoChain leftChain, rightChain;
-
-    enum ChainPositions {
-        LowCut,
-        Peak,
-        HighCut
-    };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)

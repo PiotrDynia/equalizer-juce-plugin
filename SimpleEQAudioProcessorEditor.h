@@ -10,7 +10,9 @@ struct CustomRotarySlider : juce::Slider {
 };
 
 //==============================================================================
-class SimpleEQAudioProcessorEditor final : public juce::AudioProcessorEditor
+class SimpleEQAudioProcessorEditor final : public juce::AudioProcessorEditor,
+        juce::AudioProcessorParameter::Listener,
+        juce::Timer
 {
 public:
     explicit SimpleEQAudioProcessorEditor (SimpleEQAudioProcessor&);
@@ -20,6 +22,9 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    void parameterValueChanged(int parameterIndex, float newValue) override;
+    void parameterGestureChanged (int parameterIndex, bool gestureIsStarting) override {}
+    void timerCallback() override;
 private:
     using APVTS = juce::AudioProcessorValueTreeState;
     using Attachment = APVTS::SliderAttachment;
@@ -28,6 +33,8 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     SimpleEQAudioProcessor& processorRef;
+
+    juce::Atomic<bool> parametersChanged {false};
 
     CustomRotarySlider peakFreqSlider,
     peakGainSlider,
@@ -44,6 +51,8 @@ private:
     highCutFreqSliderAttachment,
     lowCutSlopeSliderAttachment,
     highCutSlopeSliderAttachment;
+
+    MonoChain monoChain;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessorEditor)
 };
