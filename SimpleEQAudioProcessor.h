@@ -64,14 +64,21 @@ public:
 
 private:
     using Filter = juce::dsp::IIR::Filter<float>;
-
     // LowPass/HiPass slope - 12/24/36/48
     using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
-
     // Whole chain - HiPass, BandPass, LowPass
     using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
-
     using Coefficients = Filter::CoefficientsPtr;
+
+    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+    template<int Index, typename ChainType, typename CoefficientType>
+    void update(ChainType& chainType, const CoefficientType& coefficients);
+    template<typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope);
+    void updatePeakFilter(const ChainSettings& chainSettings);
+    void updateLowCutFilters(const ChainSettings& chainSettings);
+    void updateHighCutFilters(const ChainSettings& chainSettings);
+    void updateFilters();
 
     MonoChain leftChain, rightChain;
 
@@ -80,19 +87,6 @@ private:
         Peak,
         HighCut
     };
-
-    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
-    void updatePeakFilter(const ChainSettings& chainSettings);
-
-    template<int Index, typename ChainType, typename CoefficientType>
-    void update(ChainType& chainType, const CoefficientType& coefficients);
-
-    template<typename ChainType, typename CoefficientType>
-    void updateCutFilter(ChainType& chainType, const CoefficientType& coefficients, const Slope& slope);
-
-    void updateLowCutFilters(const ChainSettings& chainSettings);
-    void updateHighCutFilters(const ChainSettings& chainSettings);
-    void updateFilters();
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)

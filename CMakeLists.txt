@@ -69,7 +69,7 @@ juce_add_plugin(SimpleEQ
 
 target_sources(SimpleEQ
     PRIVATE
-        PluginEditor.cpp
+        SimpleEQAudioProcessorEditor.cpp
         SimpleEQAudioProcessor.cpp)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
