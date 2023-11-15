@@ -22,10 +22,17 @@ struct RotarySliderWithLabels : juce::Slider {
         setLookAndFeel(nullptr);
     }
 
+    struct LabelPos {
+        float pos;
+        juce::String label;
+    };
+
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }
-    juce::String getDisplayScreen() const;
+    juce::String getDisplayString() const;
+
+    juce::Array<LabelPos> labels;
 private:
     LookAndFeel lnf;
 
@@ -44,10 +51,11 @@ struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::
     void paint (juce::Graphics&) override;
 
 private:
+    void updateChain();
+
     SimpleEQAudioProcessor& processorRef;
     juce::Atomic<bool> parametersChanged {false};
     MonoChain monoChain;
-
 };
 
 //==============================================================================
